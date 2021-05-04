@@ -9,50 +9,18 @@ import java.awt.*;
 import java.awt.event.*;
 import java.awt.geom.*;
 import java.awt.font.*;
-
-import java.util.Calendar;
-import java.util.GregorianCalendar;
-
 import javax.swing.*;
 
 public class ClockPanel extends JPanel {
     
-    int hour = 0;
-    int minute = 0;
-    int second = 0;
+    Model model;
     
-    public static void main(String[] args) {
-        JFrame frame = new JFrame();
-        ClockPanel clockPanel = new ClockPanel();
-        frame.setContentPane(clockPanel);
-        frame.setTitle("Java Clock");
-        frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        
-        frame.pack();
-        frame.show();
-    }
-    
-    public ClockPanel() {
+    public ClockPanel(Model m) {
+        model = m;
         setPreferredSize(new Dimension(200, 200));
         setBackground(Color.white);
-        
-        ActionListener listener = new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                Calendar date = new  GregorianCalendar();
-                hour = date.get(Calendar.HOUR);
-                minute = date.get(Calendar.MINUTE);
-                second = date.get(Calendar.SECOND);
-                //System.out.println(hour + ":" + minute + ":" + second);
-                repaint();
-            }
-        };
-        
-        Timer t = new Timer(100, listener);
-        t.start();
     }
     
-    @Override
     public void paintComponent(Graphics g) {
         super.paintComponent(g);
         
@@ -116,7 +84,7 @@ public class ClockPanel extends JPanel {
         
         // Draw the hour hand
         gg.setStroke(new BasicStroke(2.0f));
-        theta = (90 - (hour + minute / 60.0) * 30) / (180 / Math.PI);
+        theta = (90 - (model.hour + model.minute / 60.0) * 30) / (180 / Math.PI);
         radius = 0.5 * size;
         double x1 = x0 + radius * Math.cos(theta);
         double y1 = y0 - radius * Math.sin(theta);
@@ -124,7 +92,7 @@ public class ClockPanel extends JPanel {
         
         // Draw the minute hand
         gg.setStroke(new BasicStroke(1.1f));
-        theta = (90 - (minute + second / 60.0) * 6) / (180 / Math.PI);
+        theta = (90 - (model.minute + model.second / 60.0) * 6) / (180 / Math.PI);
         radius = 0.75 * size;
         x1 = x0 + radius * Math.cos(theta);
         y1 = y0 - radius * Math.sin(theta);
@@ -133,10 +101,11 @@ public class ClockPanel extends JPanel {
         // Draw the second hand
         gg.setColor(Color.red);
         gg.setStroke(new BasicStroke(0));
-        theta = (90 - second * 6) / (180 / Math.PI);
+        theta = (90 - model.second * 6) / (180 / Math.PI);
         x1 = x0 + radius * Math.cos(theta);
         y1 = y0 - radius * Math.sin(theta);
         gg.draw(new Line2D.Double(x0, y0, x1, y1));
     }
 }
+
 
